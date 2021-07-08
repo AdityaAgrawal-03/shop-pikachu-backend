@@ -23,7 +23,7 @@ signupRouter
       const NewUser = new User({ firstName, lastName, email, password });
 
       const user = await NewUser.save();
-      
+
       const NewCart = new Cart({
         _id: user._id,
       });
