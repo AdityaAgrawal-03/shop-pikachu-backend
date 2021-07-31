@@ -4,10 +4,10 @@ const { extend } = require("lodash");
 const { Cart } = require("../models/cart.model");
 
 cartRouter
-  .route("/:userId")
+  .route("/")
   .get(async (req, res) => {
     try {
-      const { userId } = req.params;
+      const { userId } = req.user;
       const cart = await Cart.findById(userId).populate("products._id");
 
       const cartItem = cart.products.map((item) => {
@@ -24,7 +24,7 @@ cartRouter
 
   .post(async (req, res) => {
     try {
-      const { userId } = req.params;
+      const { userId } = req.user;
       let { product } = req.body;
       const cart = await Cart.findById(userId);
 
@@ -42,9 +42,10 @@ cartRouter
     }
   });
 
-cartRouter.route("/:userId/:productId").post(async (req, res) => {
+cartRouter.route("/:productId").post(async (req, res) => {
   try {
-    const { userId, productId } = req.params;
+    const { userId } = req.user;
+    const { productId } = req.params;
     const cart = await Cart.findById(userId);
     let productToBeUpdated = cart.products.find(
       (product) => product._id.toString() === productId

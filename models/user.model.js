@@ -18,8 +18,7 @@ const UserSchema = new Schema({
   },
   password: {
     type: String,
-    required: "password field cannot be emoty",
-    unique: true,
+    required: "password field cannot be empty",
   },
 });
 

@@ -1,30 +1,41 @@
 const express = require("express");
 const loginRouter = express.Router();
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const secret = process.env["secret"];
 const { User } = require("../models/user.model");
 
-loginRouter
-  .route("/")
+loginRouter.route("/").post(async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-  .post(async (req, res) => {
-    try {
-      const { email, password } = req.body;
+    const user = await User.findOne({ email });
 
-      const user = await User.findOne({ email });
-      console.log("from login", user);
-
-      if (user) {
-        return res.json({
+    if (user) {
+      const validatePassword = await bcrypt.compare(password, user.password);
+      console.log({ validatePassword });
+      if (validatePassword) {
+        const token = jwt.sign({ userId: user._id }, secret, {
+          expiresIn: "24h",
+        });
+        return res.status(200).json({
           success: true,
+          message: "user successfully logged in",
           user,
-          message: "user logged in succesfully",
+          token,
         });
       }
       return res
-        .status(404)
-        .json({ success: false, message: "user not found" });
-    } catch (error) {
-      res.status(500).json({ success: false, errorMessage: error.message });
+        .status(400)
+        .json({ success: false, message: "Invalid password" });
     }
-  });
+    return res.status(401).json({
+      success: false,
+      message: "Unathorized access, user does not exist!",
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, errorMessage: error.message });
+  }
+});
 
 module.exports = loginRouter;

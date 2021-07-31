@@ -3,17 +3,17 @@ const wishlistRouter = express.Router();
 const { Wishlist } = require("../models/wishlist.model");
 
 wishlistRouter
-  .route("/:userId")
+  .route("/")
   .get(async (req, res) => {
     try {
-      const { userId } = req.params;
+      const { userId } = req.user;
       const wishlist = await Wishlist.findById(userId).populate("products._id");
 
       const wishlistItem = wishlist.products.map((item) => {
         return { ...item._id._doc };
       });
 
-      res.json({ success: true, wishlist: wishlistItem });
+      res.json({ success: true, wishlist: wishlistItem, userId });
     } catch (error) {
       res
         .status(404)
@@ -23,7 +23,7 @@ wishlistRouter
 
   .post(async (req, res) => {
     try {
-      const { userId } = req.params;
+      const { userId } = req.user;
       let { product } = req.body;
 
       const wishlist = await Wishlist.findById(userId);
@@ -44,9 +44,10 @@ wishlistRouter
     }
   });
 
-wishlistRouter.route("/:userId/:productId").delete(async (req, res) => {
+wishlistRouter.route("/:productId").delete(async (req, res) => {
   try {
-    const { userId, productId } = req.params;
+    const { userId } = req.user;
+    const { productId } = req.params;
     const wishlist = await Wishlist.findById(userId);
     let productToBeDeleted = wishlist.products.find(
       (product) => product._id.toString() === productId

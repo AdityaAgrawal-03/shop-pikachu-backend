@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 require('mongoose-type-url');
 const { Schema } = mongoose;
+const products = require("../products-data/products-data")
 
 const ProductSchema = new Schema({
   name: {
@@ -29,6 +30,10 @@ const ProductSchema = new Schema({
       }
     }
   ],
+  typeOfBike: {
+    type: Schema.Types.Mixed,
+    required: "Cannot add product without the type of bike"
+  },
   price: {
     type: Number,
     required: "Cannot add product without price"
@@ -47,5 +52,17 @@ const ProductSchema = new Schema({
 
 const Product = mongoose.model("Product", ProductSchema);
 
-module.exports =  { Product }
+async function seedAllProducts() {
+  try {
+    products.forEach(async (product) => {
+      const addedProduct = new Product(product);
+      await addedProduct.save();
+    });
+    console.log("products added successfully")
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+module.exports =  { Product, seedAllProducts }
 
