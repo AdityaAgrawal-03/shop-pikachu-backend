@@ -55,8 +55,8 @@ cartRouter.route("/:productId").post(async (req, res) => {
     if (productUpdates.quantity) {
       productToBeUpdated = extend(productToBeUpdated, productUpdates);
     } else {
-      cart.products.pop(productToBeUpdated);
       productToBeUpdated = extend(productToBeUpdated, productUpdates);
+      cart.products.pull(productToBeUpdated._id);
     }
 
     await cart.save();
