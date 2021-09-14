@@ -27,7 +27,7 @@ const products = [
       },
     ],
     price: 12000,
-    typeOfBike: { roadBike: true },
+    typeOfBike: "road",
     inStock: true,
     fastDelivery: false,
   },
@@ -57,7 +57,7 @@ const products = [
       }
     ],
     price: 8000,
-    typeOfBike: { mountainBike: true },
+    typeOfBike: "mountain",
     inStock: true,
     fastDelivery: true,
 
@@ -93,7 +93,7 @@ const products = [
       }
     ],
     price: 6000,
-    typeOfBike: { hybridBike: true },
+    typeOfBike: "hybrid",
     inStock: true,
     fastDelivery: false,
 
@@ -129,7 +129,7 @@ const products = [
       }
     ],
     price: 3000,
-    typeOfBike: { kidsBike: true },
+    typeOfBike: "kids",
     inStock: true,
     fastDelivery: true,
 
